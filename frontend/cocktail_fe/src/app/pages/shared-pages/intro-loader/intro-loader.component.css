@@ -1,0 +1,375 @@
+/* =========================================================
+   INGRESSO: la facciata di un locale con la porta chiusa.
+   L'apertura della porta è un varco vero: dietro si vede il bar.
+   ========================================================= */
+
+.door-stage {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000000;
+}
+
+/* la scena si ingrandisce attorno al centro della porta quando si entra */
+.door-scene {
+  position: absolute;
+
+  inset: 0;
+
+  transform-origin: 50% calc(var(--door-top) + var(--door-h) * 0.5);
+
+  will-change: transform;
+}
+
+
+/* ---------- facciata: quattro pannelli attorno al varco ---------- */
+
+.wall {
+  position: absolute;
+
+  background: var(--ink);
+}
+
+.wall-top {
+  left: 0;
+  right: 0;
+  top: 0;
+
+  height: calc(var(--door-top) + 1px);
+}
+
+.wall-bottom {
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  top: calc(var(--door-bottom) - 1px);
+}
+
+.wall-left,
+.wall-right {
+  top: var(--door-top);
+
+  width: calc(50% - var(--door-w) / 2 + 1px);
+  height: var(--door-h);
+}
+
+.wall-left {
+  left: 0;
+}
+
+.wall-right {
+  right: 0;
+}
+
+
+/* ---------- insegna al neon e lampade ---------- */
+
+.sign {
+  position: absolute;
+
+  left: 50%;
+  top: calc(var(--door-top) - 96px);
+
+  margin: 0;
+
+  color: var(--bone);
+
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 62px);
+  font-weight: 900;
+
+  letter-spacing: 0.14em;
+  line-height: 1;
+
+  text-transform: uppercase;
+
+  text-shadow:
+    0 0 6px var(--campari),
+    0 0 22px var(--campari),
+    0 0 48px rgba(var(--campari-rgb), 0.7);
+
+  transform: translateX(-50%);
+}
+
+.sconce {
+  position: absolute;
+
+  top: calc(var(--door-top) + 28px);
+
+  width: 12px;
+  height: 28px;
+
+  border-radius: 6px 6px 3px 3px;
+
+  background: var(--peel);
+
+  box-shadow: 0 0 18px 8px rgba(var(--peel-rgb), 0.45);
+}
+
+.sconce-left {
+  left: calc(50% - var(--door-w) / 2 - 58px);
+}
+
+.sconce-right {
+  left: calc(50% + var(--door-w) / 2 + 46px);
+}
+
+
+/* ---------- varco e porta ---------- */
+
+.door-frame {
+  position: absolute;
+
+  left: calc(50% - var(--door-w) / 2);
+  top: var(--door-top);
+
+  width: var(--door-w);
+  height: var(--door-h);
+
+  /* la prospettiva serve alla rotazione della porta */
+  perspective: 1200px;
+
+  box-shadow:
+    0 0 0 12px #2a1a12,
+    0 0 0 14px #120c0a;
+
+  cursor: pointer;
+}
+
+/* la luce del locale sulla soglia, quando si apre */
+.door-warmth {
+  position: absolute;
+
+  inset: 0;
+
+  background: rgba(var(--peel-rgb), 0.16);
+
+  opacity: 0;
+}
+
+.door-leaf {
+  position: absolute;
+
+  inset: 0;
+
+  box-sizing: border-box;
+
+  border: 3px solid #2d1c12;
+
+  background: #4b2f1f;
+
+  transform-origin: 0 50%;
+}
+
+/* vetro illuminato in alto: dice che dentro c'è qualcuno */
+.pane {
+  position: absolute;
+
+  left: 18%;
+  right: 18%;
+  top: 8%;
+
+  height: 26%;
+
+  border: 3px solid #2d1c12;
+
+  background: var(--peel);
+}
+
+.pane::before,
+.pane::after {
+  content: "";
+
+  position: absolute;
+
+  background: #2d1c12;
+}
+
+.pane::before {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+
+  width: 3px;
+}
+
+.pane::after {
+  left: 0;
+  right: 0;
+  top: 50%;
+
+  height: 3px;
+}
+
+.panel {
+  position: absolute;
+
+  left: 14%;
+  right: 14%;
+
+  border: 3px solid #2d1c12;
+
+  background: #573625;
+
+  box-shadow:
+    inset 3px 3px 0 #6a4630,
+    inset -3px -3px 0 #3d2517;
+}
+
+.panel-top {
+  top: 40%;
+  height: 20%;
+}
+
+.panel-bottom {
+  top: 64%;
+  height: 28%;
+}
+
+.hinge {
+  position: absolute;
+
+  left: -5px;
+
+  width: 10px;
+  height: 28px;
+
+  border-radius: 2px;
+
+  background: #c9a45a;
+}
+
+.hinge-1 {
+  top: 10%;
+}
+
+.hinge-2 {
+  top: 48%;
+}
+
+.hinge-3 {
+  top: 84%;
+}
+
+.handle {
+  position: absolute;
+
+  right: 8%;
+  top: 52%;
+
+  width: 10px;
+  height: 62px;
+
+  border-radius: 6px;
+
+  background: #c9a45a;
+
+  box-shadow: 0 0 0 4px #7a6230;
+}
+
+/* luce sul pavimento: un trapezio che si allarga man mano che la porta si apre */
+.door-light {
+  position: absolute;
+
+  left: calc(50% - var(--door-w) * 1.1);
+  top: var(--door-bottom);
+
+  width: calc(var(--door-w) * 2.2);
+  height: 22vh;
+
+  background: rgba(var(--peel-rgb), 0.3);
+
+  clip-path: polygon(27% 0, 73% 0, 100% 100%, 0 100%);
+
+  opacity: 0;
+
+  transform: scaleX(0.25);
+  transform-origin: 50% 0;
+}
+
+
+/* ---------- pulsanti ---------- */
+
+.door-open {
+  position: absolute;
+
+  left: 50%;
+  top: calc(var(--door-bottom) + 26px);
+
+  display: inline-flex;
+
+  min-height: 48px;
+
+  padding: 0 22px;
+
+  align-items: center;
+
+  gap: 10px;
+
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+
+  background: rgba(var(--ink-rgb), 0.85);
+
+  color: var(--bone);
+
+  font-family: var(--font-mono);
+  font-size: 13px;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transform: translateX(-50%);
+
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.door-open:hover {
+  background: var(--bone);
+
+  color: var(--ink);
+}
+
+.intro-skip {
+  position: absolute;
+
+  right: clamp(20px, 3vw, 40px);
+  bottom: clamp(20px, 3vw, 40px);
+
+  min-height: 44px;
+
+  padding: 0 18px;
+
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+
+  background: transparent;
+
+  color: var(--bone);
+
+  font-family: var(--font-mono);
+  font-size: 12px;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.intro-skip:hover {
+  background: var(--bone);
+
+  color: var(--ink);
+}

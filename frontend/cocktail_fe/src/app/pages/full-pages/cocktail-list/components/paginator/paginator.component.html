@@ -1,0 +1,50 @@
+<footer class="paginator-footer" *ngIf="totalPages > 1">
+  <div class="paginator-container">
+
+    <span class="range-info">
+      {{ rangeStart }}–{{ rangeEnd }} <span class="range-of">di</span> {{ totalItems }}
+    </span>
+
+    <nav class="pager" aria-label="Paginazione" [style.--page-slots]="totalPages > 7 ? 7 : totalPages">
+
+      <button
+        type="button"
+        class="page-btn icon-btn"
+        (click)="prev()"
+        [disabled]="currentPage === 1"
+        aria-label="Pagina precedente"
+      >
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+
+      <div class="page-numbers">
+        <ng-container *ngFor="let p of pageList">
+        <span class="ellipsis" *ngIf="p === '…'">…</span>
+
+        <button
+          type="button"
+          *ngIf="p !== '…'"
+          class="page-btn number-btn"
+          [class.active]="p === currentPage"
+          (click)="goTo(p)"
+          [attr.aria-current]="p === currentPage ? 'page' : null"
+        >
+          {{ p }}
+        </button>
+        </ng-container>
+      </div>
+
+      <button
+        type="button"
+        class="page-btn icon-btn"
+        (click)="next()"
+        [disabled]="currentPage === totalPages"
+        aria-label="Pagina successiva"
+      >
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+
+    </nav>
+
+  </div>
+</footer>

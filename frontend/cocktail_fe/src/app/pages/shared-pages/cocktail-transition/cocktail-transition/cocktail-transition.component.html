@@ -1,0 +1,29 @@
+<div
+  *ngIf="transition"
+  #overlay
+  class="transition-overlay"
+  aria-hidden="true"
+>
+
+  <div
+    #backdrop
+    class="transition-backdrop"
+  >
+  </div>
+
+
+  <div
+    #glass
+    class="transition-glass"
+  >
+
+    <img
+      #transitionImage
+      class="transition-image"
+      [src]="transition.imageUrl"
+      alt=""
+    >
+
+  </div>
+
+</div>

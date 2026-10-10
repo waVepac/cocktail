@@ -1,0 +1,95 @@
+:host {
+  display: block;
+
+  position: relative;
+
+  z-index: 999999;
+}
+
+
+/* =========================================================
+   OVERLAY
+   ========================================================= */
+
+.transition-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  overflow: hidden;
+
+  z-index: 999999;
+
+  pointer-events: all;
+}
+
+
+/* =========================================================
+   VELO
+   Quasi opaco a metà gesto: nasconde il cambio di pagina.
+   ========================================================= */
+
+.transition-backdrop {
+  position: absolute;
+
+  inset: 0;
+
+  background: var(--ink);
+
+  opacity: 0;
+}
+
+
+/* =========================================================
+   BICCHIERE
+   Posizione, dimensione e scala sono impostate da GSAP
+   (solo transform): left/top restano fissi a zero.
+   ========================================================= */
+
+.transition-glass {
+  position: fixed;
+
+  left: 0;
+  top: 0;
+
+  transform-origin: 50% 50%;
+
+  /* resta nascosto finché GSAP non lo ha messo sopra la miniatura */
+  visibility: hidden;
+
+  will-change: transform;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   IMMAGINE
+   Il raggio è in percentuale: la miniatura (14px su 64px)
+   e la foto grande hanno la stessa forma; all'arrivo scende a 0.
+   ========================================================= */
+
+.transition-image {
+  position: absolute;
+
+  inset: 0;
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  border-radius: 22%;
+
+  object-fit: cover;
+
+  transform-origin: 50% 50%;
+
+  box-shadow:
+    0 24px 60px rgba(var(--ink-rgb), 0.35);
+
+  user-select: none;
+}

@@ -1,0 +1,46 @@
+/* fisso dietro a tutto: la pagina scorre sopra */
+.bar {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 0;
+
+  overflow: hidden;
+
+  background: var(--ink);
+
+  pointer-events: none;
+}
+
+/* velo uniforme: la scena resta riconoscibile ma il testo piccolo sopra ha sempre contrasto */
+.bar::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  background: rgba(var(--ink-rgb), 0.4);
+}
+
+/* ogni livello è più alto dello schermo: ha margine per salire con la parallasse */
+.bar-layer {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: calc(100% + 160px);
+
+  will-change: transform;
+}
+
+/* gli svg inseriti da codice non ricevono gli stili del componente: ::ng-deep */
+.bar-layer ::ng-deep svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+}

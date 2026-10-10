@@ -1,0 +1,141 @@
+{
+  "users": [
+    {
+      "id": 1791232923345,
+      "username": "Paolo",
+      "passwordHash": "$2b$10$zFfP7dyqxBSNMDAOH9JJUuMqwuKURIJ1210i2PhvHu1OOIq7mjafy",
+      "token": "436b4c66a1072fc3f0f34acdd16092255faceaa494c5db5b9eb4cd715639a75e"
+    },
+    {
+      "id": 1791481242534,
+      "username": "admin",
+      "passwordHash": "$2b$10$sO8tNhFjcPowtOIi0.z.pOiJTgHbYLALzzHCW5IxRu4IQSd/PYW0C",
+      "token": "9eebe3a01d30f8dfd1446a3a1bfec0d79313bb137980760bd7bccc2853540f9c"
+    },
+    {
+      "id": 1791632587700,
+      "username": "test_favorites",
+      "passwordHash": "$2b$10$RjLnjVxwH45/aR9ISa.YyuHGJajf2pG4CrgW49rf4avnoYaq9pBHK",
+      "token": "fc46348a06e763f2aeea973afc44077b25af4ff841555a15e5bda30d62bac367"
+    }
+  ],
+  "favorites": [
+    {
+      "userId": 1791481242534,
+      "favorite": {
+        "id": "15423",
+        "name": "110 in the shade",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/xxyywq1454511117.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791481242534,
+      "favorite": {
+        "id": "17833",
+        "name": "A. J.",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/l74qo91582480316.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791481242534,
+      "favorite": {
+        "id": "16403",
+        "name": "Black and Brown",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/wwuvxv1472668899.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791481242534,
+      "favorite": {
+        "id": "17035",
+        "name": "Buccaneer",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/upvtyt1441249023.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791481242534,
+      "favorite": {
+        "id": "12794",
+        "name": "Angelica Liqueur",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/yuurps1472667672.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791481242534,
+      "favorite": {
+        "id": "12798",
+        "name": "Coffee Liqueur",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/ryvtsu1441253851.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791632587700,
+      "favorite": {
+        "id": "15423",
+        "name": "110 in the shade",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/xxyywq1454511117.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791632587700,
+      "favorite": {
+        "id": "16403",
+        "name": "Black and Brown",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/wwuvxv1472668899.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791632587700,
+      "favorite": {
+        "id": "13282",
+        "name": "Black & Tan",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/rwpswp1454511017.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791481242534,
+      "favorite": {
+        "id": "12186",
+        "name": "Shanghai Cocktail",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/ttyrxr1478820678.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791481242534,
+      "favorite": {
+        "id": "16108",
+        "name": "9 1/2 Weeks",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/xvwusr1472669302.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791481242534,
+      "favorite": {
+        "id": "178318",
+        "name": "747 Drink",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/i9suxb1582474926.jpg"
+      },
+      "active": false
+    },
+    {
+      "userId": 1791481242534,
+      "favorite": {
+        "id": "14029",
+        "name": "57 Chevy with a White License Plate",
+        "thumbnail": "https://www.thecocktaildb.com/images/media/drink/qyyvtu1468878544.jpg"
+      },
+      "active": false
+    }
+  ]
+}

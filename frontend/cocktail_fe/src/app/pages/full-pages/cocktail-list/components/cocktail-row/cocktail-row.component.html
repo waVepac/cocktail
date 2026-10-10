@@ -1,0 +1,46 @@
+<div class="cocktail-row" (click)="openCocktail(cocktailImage)">
+
+  <span class="row-index" aria-hidden="true">
+    {{ index | number:'2.0-0' }}
+  </span>
+
+
+  <div #cocktailImage class="cocktail-image">
+    <img [src]="getSmallThumbail(cocktail.strDrinkThumb)" [alt]="cocktail.strDrink" >
+  </div>
+
+
+  <div class="cocktail-name">
+    {{ cocktail.strDrink }}
+  </div>
+
+
+  <div class="cocktail-actions">
+
+    <button
+      type="button"
+      class="icon-btn favorite-btn"
+      [class.active]="favorite"
+      [attr.aria-pressed]="favorite"
+      [disabled]="favoriteBusy"
+      [attr.aria-busy]="favoriteBusy"
+      (click)="toggleFavorite($event)"
+      [attr.aria-label]="(favorite ? 'Rimuovi dai preferiti ' : 'Aggiungi ai preferiti ') + cocktail.strDrink"
+      [title]="favorite ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti'"
+    >
+      <i aria-hidden="true" [class]="favorite ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+    </button>
+
+
+    <button
+      type="button"
+      class="icon-btn open-btn"
+      (click)="openFromButton($event, cocktailImage)"
+      [attr.aria-label]="'Apri ' + cocktail.strDrink"
+    >
+      <i class="fa-solid fa-arrow-right"></i>
+    </button>
+
+  </div>
+
+</div>

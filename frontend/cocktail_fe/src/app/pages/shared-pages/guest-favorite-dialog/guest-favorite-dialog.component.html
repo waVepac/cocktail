@@ -1,0 +1,12 @@
+<div class="backdrop" (click)="onBackdrop($event)">
+  <section #dialog role="dialog" aria-modal="true" aria-labelledby="guest-favorite-title" aria-describedby="guest-favorite-description">
+    <span class="eyebrow">I tuoi cocktail, sempre con te</span>
+    <h2 id="guest-favorite-title">Salva tra i preferiti</h2>
+    <p id="guest-favorite-description">Accedi o crea un account per ritrovare i preferiti su tutti i dispositivi. Puoi anche conservarli solo in questo browser.</p>
+    <div class="actions">
+      <button type="button" (click)="favorites.chooseGuest('login')">Sign in</button>
+      <button type="button" class="secondary" (click)="favorites.chooseGuest('register')">Sign up</button>
+    </div>
+    <button type="button" class="local" (click)="favorites.chooseGuest('local')">No, salva su questo dispositivo</button>
+  </section>
+</div>

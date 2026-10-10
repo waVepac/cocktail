@@ -1,0 +1,18 @@
+<header class="header">
+  <a class="brand" routerLink="/cocktails">The Cocktail Collection<span>DISCOVER YOUR NEXT FAVOURITE</span></a>
+  <div class="user-logout-container" #userMenu>
+    <button #userButton class="user" type="button" (click)="onUserClick()" [attr.aria-label]="auth.currentUserValue ? 'Account di ' + auth.currentUserValue.username : 'Accedi'" [attr.aria-expanded]="auth.currentUserValue ? menuOpen : null" [attr.aria-controls]="auth.currentUserValue ? 'account-dropdown' : null">
+      <i class="fa-regular fa-user user-icon" aria-hidden="true"></i>
+      <span *ngIf="auth.currentUser$ | async as user">{{ user.username }}</span>
+    </button>
+    <div id="account-dropdown" class="account-dropdown" *ngIf="menuOpen && auth.currentUserValue">
+      <a routerLink="/cocktails" [queryParams]="{ onlyFavorites: 'true' }" (click)="menuOpen = false">I miei preferiti <i class="fa-regular fa-star" aria-hidden="true"></i></a>
+      <button type="button" (click)="logout()">Logout <span aria-hidden="true">↗</span></button>
+    </div>
+  </div>
+</header>
+<div class="page-container">
+  <div class="content-wrap">
+    <router-outlet></router-outlet>
+  </div>
+</div>

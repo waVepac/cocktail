@@ -1,0 +1,13 @@
+<app-toast></app-toast>
+<app-intro-loader #intro></app-intro-loader>
+<div [attr.inert]="intro.visible || (auth.loginOpen$ | async) || (favorites.guestChoice$ | async) ? '' : null" [attr.aria-hidden]="intro.visible || (auth.loginOpen$ | async) || (favorites.guestChoice$ | async) ? 'true' : null">
+  <router-outlet></router-outlet>
+  <app-cocktail-transition></app-cocktail-transition>
+</div>
+<app-login *ngIf="!intro.visible && (auth.loginOpen$ | async)"></app-login>
+
+<app-guest-favorite-dialog *ngIf="!intro.visible && (favorites.guestChoice$ | async)"></app-guest-favorite-dialog>
+<aside class="favorites-sync" *ngIf="favorites.syncError$ | async" role="status">
+  <span>I preferiti locali devono ancora essere sincronizzati.</span>
+  <button type="button" [disabled]="favorites.busy" (click)="favorites.retrySync()">{{ favorites.busy ? 'Sincronizzazione…' : 'Riprova' }}</button>
+</aside>

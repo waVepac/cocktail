@@ -1,0 +1,117 @@
+:host {
+  display: block;
+}
+
+.paginator-footer {
+  padding: 12px 16px;
+  border: 1px solid var(--ink-3);
+  border-radius: 16px;
+  background: rgba(var(--ink-rgb), 0.88);
+}
+
+.paginator-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+
+.range-info {
+  color: var(--bone);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.range-of {
+  color: var(--mute-dark);
+}
+
+.pager {
+  --button-size: 44px;
+  --page-gap: 8px;
+  display: grid;
+  grid-template-columns: var(--button-size) auto var(--button-size);
+  align-items: center;
+  gap: var(--page-gap);
+  flex-shrink: 0;
+}
+
+/* Lo spazio dei numeri dipende dal totale delle pagine, mai dalla pagina corrente. */
+.page-numbers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--page-gap);
+  width: calc(var(--page-slots) * var(--button-size) + (var(--page-slots) - 1) * var(--page-gap));
+  min-height: var(--button-size);
+}
+
+.page-btn {
+  width: var(--button-size);
+  min-width: var(--button-size);
+  height: var(--button-size);
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--bone);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.page-btn:hover:not(:disabled):not(.active) {
+  background: var(--bone);
+  color: var(--ink);
+}
+
+.page-btn.active {
+  border-color: var(--campari);
+  background: var(--campari);
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.page-btn:disabled {
+  border-color: var(--ink-3);
+  color: var(--mute-dark);
+  cursor: not-allowed;
+}
+
+.ellipsis {
+  display: grid;
+  width: var(--button-size);
+  height: var(--button-size);
+  flex-shrink: 0;
+  place-items: center;
+  color: var(--mute-dark);
+}
+
+@media (max-width: 760px) {
+  .paginator-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .pager {
+    align-self: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-numbers {
+    width: var(--button-size);
+  }
+
+  .number-btn:not(.active),
+  .ellipsis {
+    display: none;
+  }
+}

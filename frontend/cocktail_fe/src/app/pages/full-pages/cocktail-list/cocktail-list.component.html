@@ -1,0 +1,247 @@
+<app-spinner [loading]="(loading || filterOptionsLoading || favorites.busy || (auth.isLoading$ | async)) && !(auth.loginOpen$ | async)"></app-spinner>
+<app-back-bar></app-back-bar>
+
+<div class="catalog-page">
+
+  <!-- =====================================================
+       HERO
+       ===================================================== -->
+  <header class="hero">
+
+    <p class="hero-kicker">
+      Catalogo
+      <span *ngIf="filteredCocktails.length">
+        / {{ filteredCocktails.length }} drink
+      </span>
+    </p>
+
+    <h1 class="hero-title">
+      <span class="line"><span class="line-inner">Esplora</span></span>
+      <span class="line"><span class="line-inner">i cocktail</span></span>
+    </h1>
+
+    <p class="hero-lead">
+      Scegli una categoria e consulta l'elenco dei drink disponibili.
+    </p>
+
+  </header>
+
+
+  <!-- =====================================================
+       CATEGORIE
+       Binario orizzontale: scorre con trackpad, rotella del mouse o tab.
+       ===================================================== -->
+  <nav class="category-rail" aria-label="Categorie" *ngIf="!isAlphabeticalMode">
+    <div class="category-tabs" (wheel)="scrollCategoryTabs($event)">
+      <button type="button" class="category-tab" *ngIf="activeFilterCount" [class.active]="!selectedCategory" [attr.aria-pressed]="!selectedCategory" (click)="selectCategory(undefined)">Tutte</button>
+      <button
+        *ngFor="let category of orderedCategories"
+        type="button"
+        class="category-tab"
+        [class.active]="selectedCategory === category.strCategory"
+        [attr.aria-pressed]="selectedCategory === category.strCategory"
+        (click)="selectCategory(category.strCategory)"
+      >
+        {{ category.strCategory }}
+      </button>
+    </div>
+  </nav>
+
+  <nav class="category-rail" aria-label="Alfabeto inglese" *ngIf="isAlphabeticalMode">
+    <div class="category-tabs alphabet-tabs" (wheel)="scrollCategoryTabs($event)">
+      <button type="button" class="category-tab alphabet-tab" *ngIf="activeFilterCount" [class.active]="!selectedLetter" [attr.aria-pressed]="!selectedLetter" (click)="searchCocktailsByLetter('')">Tutte</button>
+      <button
+        *ngFor="let letter of orderedAlphabet"
+        type="button"
+        class="category-tab alphabet-tab"
+        [class.active]="selectedLetter === letter"
+        [attr.aria-pressed]="selectedLetter === letter"
+        (click)="searchCocktailsByLetter(letter)"
+      >
+        {{ letter }}
+      </button>
+    </div>
+  </nav>
+
+
+  <!-- =====================================================
+       STRUMENTI
+       ===================================================== -->
+  <div class="catalog-tools">
+
+    <div class="catalog-search">
+
+      <label class="visually-hidden" for="search">
+        Cerca cocktail per nome
+      </label>
+
+      <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+
+      <input
+        id="search"
+        type="text"
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="searchCocktailByName()"
+        placeholder="Cerca cocktail per nome..."
+        autocomplete="off"
+      />
+
+      <button
+        type="button"
+        class="search-button"
+        (click)="searchCocktailByName()"
+      >
+        Cerca
+      </button>
+
+    </div>
+
+
+    <div class="filter-group">
+
+      <label for="sort">Ordina</label>
+
+      <select
+        id="sort"
+        [(ngModel)]="sortBy"
+        (change)="onSortChange()"
+      >
+        <option value="category-asc">Categoria (A-Z)</option>
+        <option value="category-desc">Categoria (Z-A)</option>
+        <option value="alphabet-asc">Alfabetica (A-Z)</option>
+        <option value="alphabet-desc">Alfabetica (Z-A)</option>
+      </select>
+
+    </div>
+
+
+    <div class="catalog-actions">
+      <button type="button" class="filters-toggle" [class.active]="activeFilterCount > 0" [attr.aria-expanded]="filtersOpen" aria-controls="catalog-filters" (click)="filtersOpen = !filtersOpen">
+        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+        Filtri <span class="filter-count" *ngIf="activeFilterCount">{{ activeFilterCount }}</span>
+        <i class="fa-solid fa-chevron-down filter-chevron" [class.open]="filtersOpen" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="refresh-button" (click)="reloadCatalog()" [disabled]="loading || filterOptionsLoading || favorites.busy" aria-label="Svuota la cache e aggiorna il catalogo">
+        <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
+        Aggiorna
+      </button>
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       ELENCO
+       ===================================================== -->
+  <section id="catalog-filters" class="filters-panel" [class.open]="filtersOpen" [attr.inert]="filtersOpen ? null : ''" [attr.aria-hidden]="filtersOpen ? null : 'true'" aria-label="Filtri del catalogo">
+    <div class="filters-panel-inner">
+      <div class="filters-grid">
+        <div class="filter-field">
+          <label for="glass-filter">Bicchiere</label>
+          <select id="glass-filter" [(ngModel)]="selectedGlass" (change)="onFiltersChange()" [disabled]="filterOptionsLoading || !glasses.length">
+            <option value="">Tutti i bicchieri</option>
+            <option *ngFor="let glass of glasses" [value]="glass">{{ glass }}</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="alcohol-filter">Tipologia</label>
+          <select id="alcohol-filter" [(ngModel)]="selectedAlcoholic" (change)="onFiltersChange()" [disabled]="filterOptionsLoading || !alcoholicCategories.length">
+            <option value="">Tutte le tipologie</option>
+            <option *ngFor="let alcoholic of alcoholicCategories" [value]="alcoholic">{{ alcoholicLabel(alcoholic) }}</option>
+          </select>
+        </div>
+        <label class="favorite-filter">
+          <input type="checkbox" [(ngModel)]="onlyFavorites" (change)="onFiltersChange()">
+          <span class="favorite-filter-icon" aria-hidden="true"><i class="fa-regular fa-star"></i></span>
+          <span>Solo i miei preferiti</span>
+        </label>
+        <div class="filter-actions">
+          <button type="button" class="filters-reset" (click)="clearFilters()" [disabled]="!activeFilterCount">Azzera filtri</button>
+          <button type="button" class="random-button" (click)="openRandomCocktail()" [disabled]="loading || filterOptionsLoading || favorites.busy">
+            <i class="fa-solid fa-shuffle" aria-hidden="true"></i>
+            Cocktail casuale
+          </button>
+        </div>
+      </div>
+      <p class="filters-hint">Bicchiere e tipologia cercano in tutto il catalogo. Scegli poi una categoria o una lettera per restringere i risultati. Puoi combinare anche i preferiti.</p>
+      <p *ngIf="filterOptionsLoading" role="status">Caricamento opzioni…</p>
+      <p class="filters-error" *ngIf="filterOptionsError" role="alert">{{ filterOptionsError }} <button type="button" (click)="loadFilterOptions()">Riprova</button></p>
+    </div>
+  </section>
+
+  <section class="catalog-box" [attr.aria-busy]="loading" aria-labelledby="catalog-title">
+
+    <h2 id="catalog-title" class="catalog-title">
+      {{ onlyFavorites ? (selectedCategory ? 'Preferiti · ' + selectedCategory : 'Tutti i preferiti') : selectedLetter ? 'Lettera ' + selectedLetter : (selectedCategory || (activeFilterCount ? 'Cocktail filtrati' : isAlphabeticalMode ? 'Alfabeto' : 'Cocktail')) }}
+    </h2>
+
+
+    <p class="catalog-status" *ngIf="loading" role="status">Aggiornamento dei cocktail…</p>
+    <p class="filters-error" *ngIf="catalogError" role="alert">{{ catalogError }} <button type="button" (click)="refreshCatalog(false)">Riprova</button></p>
+    <div
+      [attr.inert]="loading ? '' : null"
+      class="cocktail-list"
+      *ngIf="filteredCocktails.length; else emptyState"
+    >
+
+      <app-cocktail-row
+        *ngFor="let cocktail of paginatedCocktails; let i = index; trackBy: trackCocktail"
+        [cocktail]="cocktail"
+        [index]="(currentPage - 1) * pageSize + i + 1"
+        [favorite]="isFavorite(cocktail.idDrink)"
+        [favoriteBusy]="favorites.busy"
+        (mouseenter)="preloadCocktailImage(cocktail)"
+        (favoriteChange)="toggleFavorite($event)"
+        (open)="openCocktailDetail($event)"
+      >
+      </app-cocktail-row>
+
+
+      <app-paginator
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        [totalItems]="filteredCocktails.length"
+        [pageSize]="pageSize"
+        (pageChange)="onPageChange($event)"
+      >
+      </app-paginator>
+
+    </div>
+
+
+    <ng-template #emptyState>
+
+      <div class="empty-state" *ngIf="!loading && !catalogError">
+
+        <i class="fa-solid fa-martini-glass-citrus empty-icon" aria-hidden="true"></i>
+
+        <h3>
+          Nessun cocktail da mostrare
+        </h3>
+
+        <p *ngIf="activeFilterCount">Nessun cocktail corrisponde ai filtri selezionati. Prova a cambiarli o ad azzerarli.</p>
+
+        <p *ngIf="!activeFilterCount && isAlphabeticalMode && !selectedLetter && !searchTerm">
+          Seleziona una lettera per visualizzare i cocktail che iniziano con quella iniziale.
+        </p>
+
+        <p *ngIf="!activeFilterCount && !isAlphabeticalMode && !searchTerm">
+          Seleziona una categoria per visualizzare l’elenco dei drink.
+        </p>
+
+        <p *ngIf="!activeFilterCount && isAlphabeticalMode && selectedLetter && !searchTerm">
+          Nessun cocktail inizia con la lettera {{ selectedLetter }}.
+        </p>
+
+        <p *ngIf="!activeFilterCount && searchTerm">
+          Nessun cocktail corrisponde a
+          <strong>"{{ searchTerm }}"</strong>.
+        </p>
+
+      </div>
+
+    </ng-template>
+
+  </section>
+
+</div>

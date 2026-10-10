@@ -1,0 +1,333 @@
+<app-spinner [loading]="(loading || ingredientsLoading || favorites.busy || (auth.isLoading$ | async)) && !(auth.loginOpen$ | async)"></app-spinner>
+<div class="detail-page">
+
+  <!-- =====================================================
+       LOADING
+       ===================================================== -->
+  <div
+    class="detail-state"
+    *ngIf="loading"
+    role="status"
+  >
+
+    <div class="loader" aria-hidden="true"></div>
+
+    <p>
+      Caricamento cocktail...
+    </p>
+
+  </div>
+
+
+  <!-- =====================================================
+       ERRORE
+       ===================================================== -->
+  <div
+    class="detail-state error-state"
+    *ngIf="!loading && error"
+  >
+
+    <div class="state-icon" aria-hidden="true">
+      <i class="fa-solid fa-circle-exclamation"></i>
+    </div>
+
+    <h2>
+      Cocktail non disponibile
+    </h2>
+
+    <p>
+      Non è stato possibile recuperare le informazioni del cocktail.
+    </p>
+
+    <button
+      type="button"
+      class="primary-button"
+      (click)="goBack()"
+    >
+      Torna al catalogo
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       SCENA
+       ===================================================== -->
+  <div class="scene" *ngIf="!loading && !error && cocktail">
+
+
+    <!-- ===================================================
+         TESTA: titolo e dati
+         =================================================== -->
+    <header class="scene-head">
+
+      <button
+        type="button"
+        class="back-button"
+        (click)="goBack()"
+      >
+
+        <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+
+        <span>
+          Torna ai cocktail
+        </span>
+
+      </button>
+
+
+      <p class="hero-eyebrow">
+        {{ cocktail.strCategory || 'Cocktail' }}
+        <span class="hero-code">N° {{ cocktail.idDrink }}</span>
+      </p>
+
+      <h1>
+        {{ cocktail.strDrink }}
+      </h1>
+
+      <p
+        class="hero-alternate"
+        *ngIf="cocktail.strDrinkAlternate"
+      >
+        {{ cocktail.strDrinkAlternate }}
+      </p>
+
+
+      <dl class="facts">
+
+        <div class="fact" *ngIf="cocktail.strAlcoholic">
+          <dt>Tipo</dt>
+          <dd>{{ cocktail.strAlcoholic }}</dd>
+        </div>
+
+        <div class="fact" *ngIf="cocktail.strIBA">
+          <dt>IBA</dt>
+          <dd>{{ cocktail.strIBA }}</dd>
+        </div>
+
+        <div class="fact" *ngIf="cocktail.strGlass">
+          <dt>Bicchiere</dt>
+          <dd>{{ cocktail.strGlass }}</dd>
+        </div>
+
+      </dl>
+
+
+      <ul
+        class="tags"
+        *ngIf="tags.length"
+        aria-label="Tag"
+      >
+
+        <li
+          class="tag"
+          *ngFor="let tag of tags.slice(0, 5)"
+        >
+          {{ tag }}
+        </li>
+
+      </ul>
+
+      <section class="favorite-section" aria-labelledby="favorite-title">
+        <h2 id="favorite-title">I tuoi preferiti</h2>
+        <p>{{ isFavorite ? 'Questo cocktail è nella tua collezione.' : 'Salva questo cocktail nella tua collezione.' }}</p>
+        <button type="button" class="favorite-button" [class.active]="isFavorite"
+          [attr.aria-pressed]="isFavorite" [disabled]="favorites.busy" [attr.aria-busy]="favorites.busy"
+          (click)="toggleFavorite()">
+          <i aria-hidden="true" [class]="isFavorite ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+          <span>{{ isFavorite ? 'Rimuovi dai preferiti' : 'Aggiungi ai preferiti' }}</span>
+        </button>
+      </section>
+    </header>
+
+
+    <!-- ===================================================
+         PREPARAZIONE
+         =================================================== -->
+    <section class="scene-steps">
+
+      <div class="section-heading">
+
+        <span class="section-number">
+          02
+        </span>
+
+        <h2>
+          Preparazione
+        </h2>
+
+        <div class="instruction-languages" role="group" aria-label="Lingua della preparazione">
+          <button type="button" class="instruction-language" *ngFor="let language of instructionLanguages"
+            [class.active]="instructionLanguage === language.value" [attr.aria-pressed]="instructionLanguage === language.value"
+            [attr.aria-disabled]="!hasInstructions(language.value)" [title]="instructionLanguageTitle(language.value)"
+            [attr.aria-label]="instructionLanguageTitle(language.value)" (click)="selectInstructionLanguage(language.value)">
+            {{ language.label }}
+          </button>
+        </div>
+
+      </div>
+
+
+      <p class="instructions" [attr.lang]="instructionsLang" aria-live="polite">
+        {{ instructions }}
+      </p>
+
+    </section>
+
+
+    <!-- ===================================================
+         PALCO: mensola con gli ingredienti, bicchiere, banco
+         =================================================== -->
+    <section class="stage" aria-label="Il drink e i suoi ingredienti">
+
+      <!-- la mensola ripete gli ingredienti della scheda: per i lettori di schermo c'è solo la scheda -->
+      <div class="shelf" aria-hidden="true" [style.--count]="ingredients.length">
+
+        <div
+          class="shelf-item"
+          *ngFor="let ingredient of ingredients; let i = index"
+          [class.is-active]="activeIndex === i"
+          [attr.data-name]="ingredient.name"
+        >
+
+          <img
+            *ngIf="!ingredient.noImage"
+            [src]="ingredient.imageBig"
+            alt=""
+            decoding="async"
+            (error)="ingredient.noImage = true"
+          >
+
+          <span
+            *ngIf="ingredient.noImage"
+            class="shelf-dot"
+          ></span>
+
+        </div>
+
+      </div>
+
+      <div class="shelf-plank" aria-hidden="true"></div>
+
+
+      <div class="stage-glass">
+
+        <app-glass
+          [glass]="cocktail.strGlass"
+          [layers]="layers"
+          [filled]="filled"
+          [labelGlass]="cocktail.strGlass || ''"
+        >
+        </app-glass>
+
+      </div>
+
+
+      <div class="stage-counter" aria-hidden="true"></div>
+
+      <!-- la foto del drink, appoggiata sul banco -->
+      <figure class="polaroid" [class.is-landing]="transitionActive$ | async">
+
+        <button type="button" class="image-zoom" (click)="openImageViewer()"
+          [disabled]="transitionActive$ | async" [attr.aria-label]="'Ingrandisci la foto di ' + cocktail.strDrink" aria-haspopup="dialog">
+          <img data-transition-target [src]="cocktail.strDrinkThumb" [alt]="cocktail.strDrink" decoding="async">
+        </button>
+
+      </figure>
+
+    </section>
+
+
+    <!-- ===================================================
+         SCHEDA (carta): ingredienti
+         =================================================== -->
+    <aside class="card on-paper">
+
+      <div class="section-heading">
+
+        <span class="section-number">
+          01
+        </span>
+
+        <h2>
+          Ingredienti
+        </h2>
+
+      </div>
+
+
+      <ul class="ingredients-list">
+
+        <li
+          class="ingredient-row"
+          *ngFor="let ingredient of ingredients; let i = index"
+          tabindex="0"
+          [class.is-active]="activeIndex === i"
+          (mouseenter)="setActive(i)"
+          (mouseleave)="setActive(null)"
+          (focus)="setActive(i)"
+          (blur)="setActive(null)"
+        >
+
+          <span class="ingredient-photo">
+
+            <img
+              *ngIf="!ingredient.noImage"
+              [src]="ingredient.image"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              (error)="ingredient.noImage = true"
+            >
+
+            <span
+              *ngIf="ingredient.noImage"
+              class="ingredient-dot"
+            ></span>
+
+          </span>
+
+          <span class="ingredient-main">
+
+            <span class="ingredient-name">
+              {{ ingredient.name }}
+            </span>
+
+            <span class="ingredient-sub">
+
+              <span class="ingredient-kind">
+                {{ ingredient.type }}
+              </span>
+
+              <span class="ingredient-abv" *ngIf="ingredient.abv">
+                <span class="visually-hidden">Gradazione </span>{{ ingredient.abv }}% ABV
+              </span>
+
+            </span>
+
+          </span>
+
+          <span class="ingredient-measure">
+            {{ ingredient.measure || 'q.b.' }}
+          </span>
+
+        </li>
+
+      </ul>
+
+
+      <p class="card-note">
+        Gli strati del bicchiere seguono le misure della ricetta, in proporzione; dove l'API non indica un
+        volume (splash, dash...) compare un filo sottile. Dati e foto: TheCocktailDB<ng-container *ngIf="cocktail.strImageAttribution"> · foto di {{ cocktail.strImageAttribution }}</ng-container>.
+      </p>
+
+    </aside>
+
+  </div>
+
+</div>
+
+<dialog #imageDialog class="image-viewer" tabindex="-1" [attr.aria-label]="'Foto ingrandita di ' + (cocktail?.strDrink || 'cocktail')"
+  (click)="onImageBackdrop($event)" (cancel)="onImageCancel($event)" (close)="restoreImageViewerState()">
+  <img *ngIf="enlargedImageUrl" [src]="enlargedImageUrl" [alt]="cocktail?.strDrink || 'Cocktail'" decoding="async">
+</dialog>

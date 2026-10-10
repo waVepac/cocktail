@@ -1,0 +1,69 @@
+<app-spinner [loading]="submitting || (auth.isLoading$ | async)"></app-spinner>
+<div class="auth-backdrop" (click)="onBackdropClick($event)">
+  <section #dialog class="auth-dialog" [class.registering]="registering" [class.switching]="switching"
+    role="dialog" aria-modal="true" [attr.aria-labelledby]="registering ? 'register-title' : 'login-title'"
+    [attr.aria-describedby]="registering ? 'register-description' : 'login-description'"
+    [attr.aria-busy]="switching || submitting || (auth.isLoading$ | async)">
+
+    <div class="book-cover" aria-hidden="true">
+      <aside class="cover-page cover-left">
+        <span class="eyebrow">The Cocktail Collection / 01</span>
+        <div class="cover-heading"><span class="cover-kicker">Un posto al bancone.</span><h2>Il tuo<br>prossimo<br><em>preferito.</em></h2></div>
+        <div class="cocktail-frame"><img src="https://www.thecocktaildb.com/images/media/drink/vrwquq1478252802.jpg" alt="" (error)="$any($event.target).style.visibility = 'hidden'"></div>
+        <span class="edition">Mix. Discover. Enjoy.</span>
+      </aside>
+      <aside class="cover-page cover-right">
+        <span class="eyebrow">The Cocktail Collection / 02</span>
+        <div class="cover-heading"><span class="cover-kicker">Ogni cocktail, una storia.</span><h2>La prossima<br>pagina<br><em>è tua.</em></h2></div>
+        <div class="cocktail-frame"><img src="https://www.thecocktaildb.com/images/media/drink/vrwquq1478252802.jpg" alt="" (error)="$any($event.target).style.visibility = 'hidden'"></div>
+        <span class="edition">Scegli. Mescola. Scopri.</span>
+      </aside>
+    </div>
+
+    <div class="book-leaf" [style.--turn-duration.ms]="turnDuration" (transitionend)="onPageTurnEnd($event)">
+      <div class="page-face page-front on-paper" data-auth-page="login"
+        [attr.inert]="registering || switching ? '' : null" [attr.aria-hidden]="registering ? 'true' : null">
+        <ng-container *ngTemplateOutlet="accountForm; context: { register: false, prefix: 'login' }"></ng-container>
+      </div>
+      <div class="page-face page-back on-paper" data-auth-page="register"
+        [attr.inert]="!registering || switching ? '' : null" [attr.aria-hidden]="!registering ? 'true' : null">
+        <ng-container *ngTemplateOutlet="accountForm; context: { register: true, prefix: 'register' }"></ng-container>
+      </div>
+    </div>
+
+    <button class="close-button" type="button" aria-label="Chiudi login" (click)="auth.closeLogin()">×</button>
+  </section>
+</div>
+
+<ng-template #accountForm let-isRegistration="register" let-prefix="prefix">
+  <div class="form-content">
+    <div class="page-heading"><span class="eyebrow">{{ isRegistration ? 'Entra nella collezione' : 'Bentornato al bancone' }}</span><span class="page-number">{{ isRegistration ? '02' : '01' }}</span></div>
+    <h1 [id]="prefix + '-title'">{{ isRegistration ? 'Crea il tuo account.' : 'Il tuo solito?' }}</h1>
+    <p class="intro" [id]="prefix + '-description'">{{ isRegistration ? 'La tua prossima scoperta inizia da qui.' : 'Accedi e riprendi a esplorare la collezione.' }}</p>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <fieldset [disabled]="isRegistration !== registering || switching || submitting || (auth.isLoading$ | async)">
+        <label [for]="prefix + '-username'">Username</label>
+        <input [id]="prefix + '-username'" formControlName="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Il tuo username" [attr.aria-invalid]="submitted && form.controls.username.invalid" [attr.aria-describedby]="prefix + '-feedback'">
+        <label [for]="prefix + '-password'">Password</label>
+        <input [id]="prefix + '-password'" type="password" formControlName="password" [attr.autocomplete]="isRegistration ? 'new-password' : 'current-password'" placeholder="La tua password" [attr.aria-invalid]="submitted && form.controls.password.invalid" [attr.aria-describedby]="prefix + '-feedback'">
+        <div class="confirmation" *ngIf="isRegistration">
+          <label [for]="prefix + '-confirmation'">Conferma password</label>
+          <input [id]="prefix + '-confirmation'" type="password" formControlName="confirmation" autocomplete="new-password" placeholder="Ripeti la password" [attr.aria-invalid]="submitted && form.controls.password.value !== form.controls.confirmation.value" [attr.aria-describedby]="prefix + '-feedback'">
+        </div>
+        <button class="submit-button" type="submit">{{ submitting ? 'Attendi…' : isRegistration ? 'Crea account' : 'Accedi' }} <span aria-hidden="true">↗</span></button>
+      </fieldset>
+    </form>
+    <div [id]="prefix + '-feedback'" class="feedback" aria-live="polite">
+      <p class="error" *ngIf="error" role="alert">{{ error }}</p>
+      <p class="success" *ngIf="message">{{ message }}</p>
+      <p *ngIf="!submitting && (auth.isLoading$ | async)">Verifica della sessione…</p>
+      <ng-container *ngIf="auth.sessionError$ | async as sessionError">
+        <p class="error">{{ sessionError }}</p>
+        <button class="text-button" type="button" *ngIf="auth.hasSavedSession" [disabled]="isRegistration !== registering || switching || submitting || (auth.isLoading$ | async)" (click)="retrySession()">Riprova verifica sessione</button>
+      </ng-container>
+    </div>
+    <p class="switch-copy">{{ isRegistration ? 'Hai già un account?' : 'Non hai ancora un account?' }}
+      <button class="text-button switch-button" type="button" (click)="switchMode()" [disabled]="isRegistration !== registering || switching || submitting || (auth.isLoading$ | async)">{{ isRegistration ? 'Sign in' : 'Sign up' }} <span aria-hidden="true">{{ isRegistration ? '→' : '←' }}</span></button>
+    </p>
+  </div>
+</ng-template>

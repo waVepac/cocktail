@@ -1,0 +1,74 @@
+:host {
+  display: block;
+}
+
+.glass {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: visible;
+}
+
+.g-shadow {
+  fill: rgba(var(--ink-rgb), 0.4);
+}
+
+.g-body {
+  fill: rgba(var(--bone-rgb), 0.05);
+}
+
+.g-liquid {
+  opacity: 0.94;
+}
+
+.g-surface {
+  opacity: 0.96;
+}
+
+.g-outline,
+.g-rim,
+.g-rim-back,
+.g-highlight {
+  fill: none;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.g-outline,
+.g-rim {
+  stroke: var(--bone);
+  stroke-width: 1.6;
+}
+
+.g-rim-back {
+  stroke: var(--bone);
+  stroke-width: 1;
+
+  opacity: 0.35;
+}
+
+.g-highlight {
+  stroke: var(--bone);
+  stroke-width: 2.4;
+
+  opacity: 0.55;
+}
+
+.g-highlight-soft {
+  stroke-width: 1.4;
+
+  opacity: 0.28;
+}
+
+
+/* le didascalie hanno bisogno di spazio ai lati: su schermi stretti si nascondono */
+@media (max-width: 1000px) {
+
+  .g-callouts {
+    display: none;
+  }
+
+}

@@ -1,0 +1,265 @@
+:host {
+  display: block;
+  width: 100%;
+
+  /* la scala e l'opacità sono impostate dallo scroll della lista (solo transform e opacity) */
+  transform-origin: center center;
+
+  will-change: transform, opacity;
+}
+
+
+/* =========================================================
+   RIGA
+   Al passaggio una lastra di carta sale dal basso e la riga si
+   inverte (transform + colore, nient'altro).
+   ========================================================= */
+
+.cocktail-row {
+  position: relative;
+
+  isolation: isolate;
+  overflow: hidden;
+
+  display: grid;
+
+  grid-template-columns:
+    48px
+    64px
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 18px;
+
+  min-height: 84px;
+
+  margin-bottom: 8px;
+  padding: 10px clamp(8px, 1.2vw, 16px);
+
+  border: 1px solid var(--ink-3);
+  border-radius: 16px;
+
+  /* velata: lascia intravedere le bottiglie dietro */
+  background: rgba(var(--ink-rgb), 0.88);
+
+  color: var(--bone);
+
+  cursor: pointer;
+
+  transition: color 0.18s ease;
+}
+
+.cocktail-row::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: -1;
+
+  background: var(--bone);
+
+  transform: scaleY(0);
+  transform-origin: bottom;
+
+  transition: transform 0.24s var(--ease-move);
+}
+
+.cocktail-row:hover,
+.cocktail-row:focus-within {
+  color: var(--ink);
+}
+
+.cocktail-row:hover::before,
+.cocktail-row:focus-within::before {
+  transform: scaleY(1);
+}
+
+
+/* =========================================================
+   NUMERO
+   ========================================================= */
+
+.row-index {
+  padding-left: 4px;
+
+  color: var(--mute-dark);
+
+  font-family: var(--font-mono);
+  font-size: 13px;
+
+  font-variant-numeric: tabular-nums;
+
+  transition: color 0.18s ease;
+}
+
+.cocktail-row:hover .row-index,
+.cocktail-row:focus-within .row-index {
+  color: var(--mute-paper);
+}
+
+
+/* =========================================================
+   FOTO
+   Solo scala: la miniatura resta un quadrato e il punto di
+   partenza della transizione coincide con quello che si vede.
+   ========================================================= */
+
+.cocktail-image {
+  width: 64px;
+  height: 64px;
+
+  overflow: hidden;
+
+  border-radius: 22%;
+
+  background: var(--ink-2);
+
+  transition: transform 0.24s var(--ease-move);
+}
+
+.cocktail-row:hover .cocktail-image {
+  transform: scale(1.08);
+}
+
+.cocktail-image img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* =========================================================
+   NOME
+   ========================================================= */
+
+.cocktail-name {
+  overflow: hidden;
+
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 800;
+
+  line-height: 1;
+
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+
+  white-space: nowrap;
+
+  transition: transform 0.24s var(--ease-move);
+}
+
+.cocktail-row:hover .cocktail-name {
+  transform: translateX(12px);
+}
+
+
+/* =========================================================
+   AZIONI
+   ========================================================= */
+
+.cocktail-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.icon-btn {
+  display: flex;
+
+  width: 44px;
+  height: 44px;
+
+  padding: 0;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: inherit;
+
+  font-size: 16px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.favorite-btn.active {
+  border-color: var(--peel);
+
+  background: var(--peel);
+
+  color: var(--ink);
+}
+
+.open-btn {
+  border-color: var(--campari);
+
+  background: var(--campari);
+
+  color: var(--ink);
+}
+
+/* sulla lastra di carta i pulsanti passano a inchiostro: contrasto pieno */
+.cocktail-row:hover .icon-btn:not(.active),
+.cocktail-row:focus-within .icon-btn:not(.active) {
+  border-color: var(--ink);
+}
+
+.cocktail-row:hover .open-btn,
+.cocktail-row:focus-within .open-btn {
+  background: var(--ink);
+
+  color: var(--bone);
+}
+
+
+/* =========================================================
+   SCHERMI STRETTI
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .cocktail-row {
+    grid-template-columns:
+      64px
+      minmax(0, 1fr)
+      auto;
+
+    gap: 14px;
+
+    min-height: 80px;
+  }
+
+  .row-index {
+    display: none;
+  }
+
+}
+
+@media (max-width: 450px) {
+
+  .favorite-btn {
+    display: none;
+  }
+
+}
+
+.favorite-btn:disabled { opacity: 0.5; cursor: wait; }

@@ -1,0 +1,70 @@
+<div
+  *ngIf="visible"
+  #stage
+  class="door-stage"
+>
+
+  <!-- la scena si ingrandisce attorno alla porta quando si entra -->
+  <div #scene class="door-scene" aria-hidden="true">
+
+    <!-- la facciata: quattro pannelli attorno all'apertura, che lascia vedere il bar dietro -->
+    <div class="wall wall-top"></div>
+    <div class="wall wall-bottom"></div>
+    <div class="wall wall-left"></div>
+    <div class="wall wall-right"></div>
+
+    <p class="sign">Cocktail</p>
+
+    <div class="sconce sconce-left"></div>
+    <div class="sconce sconce-right"></div>
+
+    <div #light class="door-light"></div>
+
+    <div class="door-frame" (click)="open()" (mouseenter)="peek(true)" (mouseleave)="peek(false)">
+
+      <!-- calore della soglia: una velatura sull'apertura quando la porta si apre -->
+      <div #warmth class="door-warmth"></div>
+
+      <div #leaf class="door-leaf">
+
+        <div class="pane"></div>
+        <div class="panel panel-top"></div>
+        <div class="panel panel-bottom"></div>
+
+        <div class="hinge hinge-1"></div>
+        <div class="hinge hinge-2"></div>
+        <div class="hinge hinge-3"></div>
+
+        <div class="handle"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- il pulsante vero: la porta si apre anche da tastiera -->
+  <button
+    #doorButton
+    type="button"
+    class="door-open"
+    (click)="open()"
+    (mouseenter)="peek(true)"
+    (mouseleave)="peek(false)"
+    (focus)="peek(true)"
+    (blur)="peek(false)"
+  >
+    <i class="fa-solid fa-door-open" aria-hidden="true"></i>
+    <span>Apri la porta</span>
+  </button>
+
+  <button
+    type="button"
+    class="intro-skip"
+    (click)="skip()"
+  >
+    Salta
+  </button>
+
+</div>
